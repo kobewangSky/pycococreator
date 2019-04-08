@@ -76,7 +76,7 @@ def create_image_info(image_id, file_name, image_size,
 
     return image_info
 
-def create_annotation_info(annotation_id, image_id, category_info, binary_mask, 
+def create_annotation_info(annotation_id, image_id, category_info, binary_mask,
                            image_size=None, tolerance=2, bounding_box=None):
 
     if image_size is not None:
@@ -110,6 +110,38 @@ def create_annotation_info(annotation_id, image_id, category_info, binary_mask,
         "segmentation": segmentation,
         "width": binary_mask.shape[1],
         "height": binary_mask.shape[0],
-    } 
+    }
+
+    return annotation_info
+
+def create_annotation_info_withoutmask(annotation_id, image_id, category_info, image_size, tolerance=2, bounding_box = None):
+    area = (bounding_box[2] - bounding_box[0]) * (bounding_box[3] - bounding_box[1])
+    if area < 1:
+        return None
+
+    if bounding_box is None:
+        return None
+
+    if category_info["is_crowd"]:
+        is_crowd = 1
+    else :
+        is_crowd = 0
+
+    x1 = bounding_box[0]
+    y1 = bounding_box[1]
+    x2 = bounding_box[2]
+    y2 = bounding_box[3]
+
+    annotation_info = {
+        "id": annotation_id,
+        "image_id": image_id,
+        "category_id": category_info["id"],
+        "iscrowd": is_crowd,
+        "area": area,
+        "bbox": bounding_box,
+        "segmentation": [[x1,y1,x1,(y1 + y2), (x1 + x2), (y1 + y2), (x1 + x2), y1]],
+        "width": image_size[0],
+        "height": image_size[0],
+    }
 
     return annotation_info
