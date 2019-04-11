@@ -7,8 +7,8 @@ import pylab
 import os
 import cv2
 
-image_directory = '/home/kobe/maskrcnn-benchmark/datasets/ACRV/frames/000000/'
-annotation_file = '/home/kobe/maskrcnn-benchmark/datasets/ACRV/ACRV_000000.json'
+image_directory = '/home/kobe/maskrcnn-benchmark/datasets/Virtual/image/'
+annotation_file = '/home/kobe/maskrcnn-benchmark/datasets/Virtual/ACRV_Virtual.json'
 
 # image_directory = './train/voc/VOC2007/JPEGImages/'
 # annotation_file = './train/voc/VOC2007/VOC2007.json'
@@ -42,20 +42,21 @@ for id,img in enumerate(image_ids):
     # print()
 
     image_data = example_coco.loadImgs(img)[0]
-    image = cv2.imread(image_directory + image_data['file_name'])
+    temppath = image_directory + image_data['file_name']
+    image = cv2.imread(temppath)
     annotation_ids = example_coco.getAnnIds(imgIds=image_data['id'], catIds=category_ids, iscrowd=None)
     annotations = example_coco.loadAnns(annotation_ids)
 
     for ann in annotations:
-        x1 = ann['bbox'][0]
-        y1 = ann['bbox'][1]
-        w = ann['bbox'][2]
-        h = ann['bbox'][3]
+        x1 = int(ann['bbox'][0])
+        y1 = int(ann['bbox'][1])
+        w = int(ann['bbox'][2])
+        h = int(ann['bbox'][3])
 
         cv2.rectangle(image, (x1, y1), (x1 + w, y1 + h), (255,0,0), 2)
         name = str(id) + '.jpg'
         name = os.path.join('./test', name)
-        cv2.imwrite(name, image)
-        print()
+    cv2.imwrite(name, image)
+    print()
 
 

@@ -115,7 +115,7 @@ def create_annotation_info(annotation_id, image_id, category_info, binary_mask,
     return annotation_info
 
 def create_annotation_info_withoutmask(annotation_id, image_id, category_info, image_size, tolerance=2, bounding_box = None):
-    area = (bounding_box[2] - bounding_box[0]) * (bounding_box[3] - bounding_box[1])
+    area = ((bounding_box[2]+bounding_box[0]) - bounding_box[0]) * ((bounding_box[3]+bounding_box[1]) - bounding_box[1])
     if area < 1:
         return None
 
